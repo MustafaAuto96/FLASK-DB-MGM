@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+{% if edit %}
+  <h2 class="mb-4 fw-bold">Edit User: {{ edit_user.username }}</h2>
+{% else %}
+  <h2 class="mb-4 fw-bold">Create New User</h2>
+{% endif %}
+<form method="POST" novalidate class="mb-5">
+  {{ form.csrf_token }}
+  <div class="row mb-3">
+    <div class="col-4">
+      {{ form.username.label(class_="form-label") }}
+      {{ form.username(class_="form-control") }}
+      {% for error in form.username.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+<div class="col-4">
+  {{ form.password.label(class_='form-label') }}
+  {{ form.password(class_='form-control', autocomplete='new-password', minlength=0) }}
+  <small class="form-text text-muted">
+    {% if edit %}Leave blank to keep current password{% else %}Minimum 6 characters{% endif %}
+  </small>
+  {% for error in form.password.errors %}
+    <div class="text-danger">{{ error }}</div>
+  {% endfor %}
+</div>
+    <div class="col-4">
+      {{ form.group.label(class_="form-label") }}
+      {{ form.group(class_="form-select") }}
+      {% for error in form.group.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+    {% if edit %}Update User{% else %}Create User{% endif %}
+  </button>
+  {% if edit %}
+  <a href="{{ url_for('main.admin') }}" class="btn btn-secondary ms-2">Cancel</a>
+  {% endif %}
+</form>
+
+<h3 class="mb-3 fw-bold">User List</h3>
+<table class="table table-dark table-striped align-middle">
+  <thead>
+    <tr>
+      <th>Username</th><th>Group</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for u in users %}
+    <tr>
+      <td>{{ u.username }}</td>
+      <td><span class="badge bg-info text-dark">{{ u.group }}</span></td>
+      <td>
+        <a href="{{ url_for('main.edit_user', id=u.id) }}" class="text-primary me-2" title="Edit"><i class="bi bi-pencil-square"></i></a>
+        <form method="POST" action="{{ url_for('main.delete_user', id=u.id) }}" style="display:inline;" onsubmit="return confirm('Delete this user?');">
+          <button class="btn btn-link text-danger p-0" type="submit" title="Delete">
+            <i class="bi bi-trash-fill"></i>
+          </button>
+        </form>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="3" class="text-center">No users available.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
