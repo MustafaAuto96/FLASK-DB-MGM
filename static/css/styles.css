@@ -1,0 +1,33 @@
+body {
+    background-color: #1a1c29;
+    color: #e9ecef;
+}
+table.table-dark > tbody > tr:hover {
+    background-color: #2b303e;
+}
+.navbar-dark .navbar-nav .nav-link.active {
+    font-weight: 600;
+    color: #52b788;
+}
+body.light-theme {
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+}
+
+body.light-theme .table {
+  color: #212529 !important;
+}
+
+body.light-theme .table thead {
+  background-color: #dee2e6 !important;
+  color: #212529 !important;
+}
+
+body.light-theme .navbar {
+  background-color: #e9ecef !important;
+  color: #212529 !important;
+}
+
+.btn-link.text-light {
+  color: inherit; /* Allow theme toggle button to adapt */
+}
