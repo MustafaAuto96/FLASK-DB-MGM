@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4 fw-bold">{% if edit %}Edit Site{% else %}Submit New Site{% endif %}</h2>
+<form method="POST" novalidate>
+  {{ form.csrf_token }}
+
+  <div class="row mb-3">
+    <div class="col">
+      {{ form.site_location.label(class_="form-label") }}
+      {{ form.site_location(class_="form-control") }}
+      {% for error in form.site_location.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="col">
+      {{ form.device_name.label(class_="form-label") }}
+      {{ form.device_name(class_="form-control") }}
+      {% for error in form.device_name.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col">
+      {{ form.sdwan_site_id.label(class_="form-label") }}
+      {{ form.sdwan_site_id(class_="form-control") }}
+      {% for error in form.sdwan_site_id.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="col">
+      {{ form.lan_ip.label(class_="form-label") }}
+      {{ form.lan_ip(class_="form-control") }}
+      {% for error in form.lan_ip.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="row mb-3">
+  <div class="col">
+    {{ form.atm_port.label(class_="form-label") }}
+    {{ form.atm_port(class_="form-control") }}
+  </div>
+</div>
+
+  <fieldset class="border p-3 mb-3">
+    <legend class="w-auto px-2">EL ISP Information</legend>
+    <div class="mb-2">
+      {{ form.el_isp_details.label(class_="form-label") }}
+      {{ form.el_isp_details(class_="form-control", rows=2, placeholder="ISP Details") }}
+    </div>
+    <div class="row">
+      <div class="col">
+        {{ form.el_capacity.label(class_="form-label") }}
+        {{ form.el_capacity(class_="form-control") }}
+      </div>
+      <div class="col">
+        {{ form.el_l2_ip.label(class_="form-label") }}
+        {{ form.el_l2_ip(class_="form-control") }}
+      </div>
+
+
+    </div>
+  </fieldset>
+
+  <fieldset class="border p-3 mb-3">
+    <legend class="w-auto px-2">ILevant ISP Information</legend>
+    <div class="mb-2">
+      {{ form.ilevant_isp_details.label(class_="form-label") }}
+      {{ form.ilevant_isp_details(class_="form-control", rows=2, placeholder="ISP Details") }}
+    </div>
+    <div class="mb-3">
+      {{ form.ilevant_capacity.label(class_="form-label") }}
+      {{ form.ilevant_capacity(class_="form-control") }}
+    </div>
+  </fieldset>
+
+  <fieldset class="border p-3 mb-3">
+    <legend class="w-auto px-2">Horizon ISP Information</legend>
+    <div class="mb-2">
+      {{ form.horizon_isp_details.label(class_="form-label") }}
+      {{ form.horizon_isp_details(class_="form-control", rows=2, placeholder="ISP Details") }}
+    </div>
+    <div class="row">
+      <div class="col">
+        {{ form.horizon_capacity.label(class_="form-label") }}
+        {{ form.horizon_capacity(class_="form-control") }}
+      </div>
+      <div class="col">
+        {{ form.horizon_l2_ip.label(class_="form-label") }}
+        {{ form.horizon_l2_ip(class_="form-control") }}
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="d-flex justify-content-end">
+    <a href="{{ url_for('main.site_data') }}" class="btn btn-secondary me-2">Cancel</a>
+    {{ form.submit(class_="btn btn-primary", value= "Update Site" if edit else "Add Site") }}
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4 fw-bold">Site Data</h2>
+<form class="mb-3 d-flex" method="get" action="{{ url_for('main.site_data') }}">
+  <input type="search" name="search" placeholder="Search for any site detail..." class="form-control me-2" value="{{ search }}">
+  <button class="btn btn-success" type="submit">Search</button>
+</form>
+
+<div class="mb-3">
+  <a href="{{ url_for('main.export_sites') }}" class="btn btn-success">Export to Excel</a>
+</div>
+
+<table class="table table-dark table-striped table-hover align-middle">
+  <thead>
+    <tr>
+      <th>Site Location</th><th>Device Name</th><th>SDWAN Site ID</th><th>LAN IP</th><th>ATM PORT</th>
+      <th>EL ISP Info</th><th>ILevant ISP Info</th><th>Horizon ISP Info</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for site in sites %}
+    <tr>
+      <td><strong>{{ site.site_location }}</strong></td>
+      <td>{{ site.device_name }}</td>
+      <td>{{ site.sdwan_site_id }}</td>
+      <td>{{ site.lan_ip }}</td>
+      <td>{{ site.atm_port }}</td>
+      <td>
+        <strong>{{ site.el_isp_info_details }}</strong><br>
+        Capacity: {{ site.el_isp_capacity_mbps  }}<br>
+        L2 IP: {{ site.el_isp_l2_ip }}
+      </td>
+      <td>
+        <strong>{{ site.ilevant_isp_info_details }}</strong><br>
+        Capacity: {{ site.ilevant_isp_capacity_mbps  }}
+      </td>
+      <td>
+        <strong>{{ site.horizon_isp_info_details }}</strong><br>
+        Capacity: {{ site.horizon_isp_capacity_mbps  }}<br>
+        L2 IP: {{ site.horizon_isp_l2_ip }}
+      </td>
+
+      <td>
+        <a href="{{ url_for('main.edit_site', id=site.id) }}" class="text-primary me-2" title="Edit"><i class="bi bi-pencil-square"></i></a>
+        <form method="POST" action="{{ url_for('main.delete_site', id=site.id) }}" style="display:inline;" onsubmit="return confirm('Delete this site?');">
+        <a href="{{ url_for('main.clone_site', id=site.id) }}" class="text-success me-2" title="Clone"><i class="bi bi-files"></i></a>
+          <!-- Add to Daily Report Icon -->
+          <a href="{{ url_for('main.add_to_daily_report', site_id=site.id) }}" class="text-info me-2" title="Add to Daily Report">
+            <i class="bi bi-plus-square"></i>
+          </a>
+          <button class="btn btn-link text-danger p-0 btn-delete-site" data-site-id="{{ site.id }}" data-site-name="{{ site.site_location }}" title="Delete">
+          <i class="bi bi-trash-fill"></i>
+          </button>
+        </form>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="8" class="text-center">No site data found.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

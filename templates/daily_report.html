@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4 fw-bold">{{ "Add New Problem Report" if not edit else "Edit Problem Report" }}</h2>
+
+<form method="POST" novalidate class="mb-4">
+  {{ form.csrf_token }}
+  
+  <div class="row mb-3">
+    <div class="col-md-3">
+      {{ form.site_location.label(class_="form-label") }}
+      {{ form.site_location(class_="form-select") }}
+      {% for error in form.site_location.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="col-md-3">
+      {{ form.ticket_id.label(class_="form-label") }}
+      {{ form.ticket_id(class_="form-control") }}
+      {% for error in form.ticket_id.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+
+    <div class="col-md-3">
+      {{ form.status.label(class_="form-label") }}
+      {{ form.status(class_="form-select") }}
+      {% for error in form.status.errors %}
+      <div class="text-danger">{{ error }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="mb-3">
+    {{ form.reason.label(class_="form-label") }}
+    {{ form.reason(class_="form-control", rows=2) }}
+  </div>
+
+  <div class="mb-3">
+    {{ form.last_update.label(class_="form-label") }}
+    {{ form.last_update(class_="form-control", rows=2) }}
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-3">
+      {{ form.issue_date.label(class_="form-label") }}
+      {{ form.issue_date(class_="form-control", type="date") }}
+    </div>
+    <div class="col-md-3">
+      {{ form.last_follow_up.label(class_="form-label") }}
+      {{ form.last_follow_up(class_="form-control", type="date") }}
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+  {{ "Add Report" if not edit else "Update Report" }}
+</button>
+</form>
+
+<h3 class="mb-3 fw-bold">Current Reports</h3>
+<div class="mb-3">
+  <a href="{{ url_for('main.export_reports') }}" class="btn btn-success">Export Reports</a>
+</div>
+
+<table class="table table-dark table-striped table-hover align-middle">
+  <thead>
+    <tr>
+      <th>Site Location</th><th>Ticket ID</th><th>Status</th><th>Reason</th><th>Last Update</th><th>Issue Date</th><th>Last Follow Up</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for report in reports %}
+    <tr>
+      <td><strong>{{ report.site.site_location }}</strong></td>
+      <td>{{ report.ticket_id }}</td>
+      <td>
+        {% if report.status == 'DOWN' %}
+          <span class="badge bg-danger">DOWN</span>
+        {% else %}
+          <span class="badge bg-success">UP</span>
+        {% endif %}
+      </td>
+      <td>{{ report.reason }}</td>
+      <td>{{ report.last_update }}</td>
+      <td>{{ report.issue_date.strftime('%Y-%m-%d') }}</td>
+      <td>{{ report.last_follow_up.strftime('%Y-%m-%d') }}</td>
+      {% if current_user.group in ['Admin', 'NOC Team'] %}
+      <td>
+        <a href="{{ url_for('main.edit_report', id=report.id) }}" class="text-primary me-2" title="Edit"><i class="bi bi-pencil-square"></i></a>
+        <form method="POST" action="{{ url_for('main.delete_report', id=report.id) }}" style="display:inline;" onsubmit="return confirm('Delete this report?');">
+          <a href="{{ url_for('main.clone_report', id=report.id) }}" class="text-success me-2" title="Clone"><i class="bi bi-files"></i></a>
+          <button class="btn btn-link text-danger p-0 btn-delete-report" data-report-id="{{ report.id }}" data-report-ticket="{{ report.ticket_id }}" data-report-site="{{ report.site.site_location }}" title="Delete"><i class="bi bi-trash-fill"></i></button>
+        </form>
+      </td>
+      {% endif %}
+    </tr>
+  {% else %}
+    <tr><td colspan="8" class="text-center">No reports found.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
